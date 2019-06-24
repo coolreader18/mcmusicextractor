@@ -102,7 +102,11 @@ processButton.addEventListener("click", async () => {
   show(processingSection);
   zipFile = await zip.generateAsync({ type: "blob" }, meta => {
     progress.value = meta.percent;
-    currentFile.textContent = `Currently processing: ${meta.currentFile}`;
+    // at the very end, meta.currentFile is null, so "Currently processing: null"
+    // would briefly flash if not for this check.
+    if (meta.currentFile) {
+      currentFile.textContent = `Currently processing: ${meta.currentFile}`;
+    }
   });
   hide(processingSection, mainSection);
   show(doneSection);
