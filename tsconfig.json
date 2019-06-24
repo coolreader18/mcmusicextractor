@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "target": "es2017",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}

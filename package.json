@@ -1,0 +1,22 @@
+{
+  "name": "mcmusicextractor",
+  "version": "1.0.0",
+  "description": "Extract Minecraft's music files from your Minecraft installation",
+  "author": "coolreader18",
+  "repository": "https://github.com/coolreader18/mcmusicextractor",
+  "dependencies": {
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/file-saver": "^2.0.1",
+    "@types/jszip": "^3.1.6",
+    "parcel": "^1.12.3",
+    "typescript": "^3.5.2"
+  },
+  "browserslist": [
+    "Chrome 71",
+    "Firefox 67"
+  ],
+  "license": "MIT"
+}

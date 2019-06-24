@@ -1,0 +1,13 @@
+input,
+button {
+  display: block;
+  margin: 10px 0;
+}
+
+code {
+  font-size: 1.2em;
+}
+
+.hidden {
+  display: none;
+}
