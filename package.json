@@ -4,6 +4,10 @@
   "description": "Extract Minecraft's music files from your Minecraft installation",
   "author": "coolreader18",
   "repository": "https://github.com/coolreader18/mcmusicextractor",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "dist": "parcel build src/index.html"
+  },
   "dependencies": {
     "file-saver": "^2.0.2",
     "jszip": "^3.2.1"
