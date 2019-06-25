@@ -9,12 +9,18 @@
     "dist": "parcel build src/index.html --public-url ./"
   },
   "dependencies": {
+    "audio-buffer-from": "^1.1.1",
     "file-saver": "^2.0.2",
-    "jszip": "^3.2.1"
+    "flac.js": "^0.2.1",
+    "jszip": "^3.2.1",
+    "ogg.js": "^0.1.0",
+    "vorbis-encoder-js": "^1.0.2",
+    "vorbis.js": "^0.1.1"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
     "@types/jszip": "^3.1.6",
+    "@types/parcel-env": "^0.0.0",
     "parcel": "^1.12.3",
     "typescript": "^3.5.2"
   },
@@ -22,5 +28,9 @@
     "Chrome 71",
     "Firefox 67"
   ],
+  "alias": {
+    "av": "./vendor/aurora_slim.js",
+    "ogg-vorbis-encoder-js": "./node_modules/ogg-vorbis-encoder-js/lib/OggVorbisEncoder.js"
+  },
   "license": "MIT"
 }

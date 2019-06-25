@@ -11,3 +11,7 @@ code {
 .hidden {
   display: none;
 }
+
+#current {
+  white-space: pre;
+}

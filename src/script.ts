@@ -1,6 +1,6 @@
-import { fromEntries, hasOwnProperty } from "./util";
-import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { fromEntries } from "./util";
+import { processAssets } from "./processing";
 
 const fileInput = document.getElementById("files") as HTMLInputElement;
 const versionInput = document.getElementById("version") as HTMLInputElement;
@@ -12,7 +12,7 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 
 const mainSection = document.getElementById("main") as HTMLDivElement;
 const processingSection = document.getElementById(
-  "processing"
+  "processing",
 ) as HTMLDivElement;
 const errorSection = document.getElementById("error") as HTMLDivElement;
 const doneSection = document.getElementById("done") as HTMLDivElement;
@@ -29,87 +29,38 @@ function reset() {
   hide(doneSection, errorSection, processingSection);
 }
 
-function err(error: string) {
-  errorSection.textContent = error;
-  show(errorSection);
-  hide(processingSection);
-  return new Error(error);
-}
+const worker = new Worker("./worker.ts");
 
-interface Index {
-  objects: {
-    [filename: string]: {
-      hash: string;
-      size: number;
-    };
-  };
-}
+worker.addEventListener("error", console.error);
 
-processButton.addEventListener("click", async () => {
+processButton.addEventListener("click", () => {
   reset();
-
   const files = fromEntries(
     [...fileInput.files!].map(file => [
       (file as any).webkitRelativePath as string,
-      file
-    ])
+      file,
+    ]),
   );
-  const version = versionInput.value;
-
-  const indexFilename = `assets/indexes/${version}.json`;
-  if (!hasOwnProperty(files, indexFilename)) {
-    console.log(files);
-    const versions = Object.keys(files)
-      .map(filename => {
-        const m = filename.match(/^assets\/indexes\/(.+)\.json$/);
-        return m && m[1];
-      })
-      .filter(a => !!a)
-      .join(", ");
-    return err(
-      `Couldn't find index for version provided. The available versions are: ${versions}`
-    );
-  }
-  const indexFile = files[indexFilename];
-  const index: Index = await new Response(indexFile).json();
-
-  const zip = new JSZip();
-
-  const musicFiles = Object.entries(index.objects).filter(
-    ([filename]) =>
-      filename.startsWith("minecraft/sounds/music/") ||
-      filename.startsWith("minecraft/sounds/records/")
-  );
-  for (const [filename, { hash }] of musicFiles) {
-    const m = filename.match(/\/([^\/]*?\.ogg$)/);
-    if (!m) {
-      throw err(`${filename} is not a .ogg file`);
-    }
-    const basename = m[1];
-
-    const musicFilename = `assets/objects/${hash.slice(0, 2)}/${hash}`;
-    if (!hasOwnProperty(files, musicFilename)) {
-      throw err(`File ${filename} with hash ${hash} not found`);
-    }
-    const file = files[musicFilename];
-
-    if (zip.file(basename)) {
-      throw err(`File ${basename} occurs twice`);
-    }
-    zip.file(basename, file);
-  }
-
-  show(processingSection);
-  zipFile = await zip.generateAsync({ type: "blob" }, meta => {
-    progress.value = meta.percent;
-    // at the very end, meta.currentFile is null, so "Currently processing: null"
-    // would briefly flash if not for this check.
-    if (meta.currentFile) {
-      currentFile.textContent = `Currently processing: ${meta.currentFile}`;
-    }
-  });
-  hide(processingSection, mainSection);
-  show(doneSection);
+  processAssets({
+    files,
+    minecraftVersion: versionInput.value,
+    onProgress: ({ percentage, text }) => {
+      show(processingSection);
+      if (percentage) progress.value = percentage;
+      if (text) currentFile.textContent = text;
+    },
+  })
+    .then(zip => {
+      zipFile = zip;
+      hide(processingSection, mainSection);
+      show(doneSection);
+    })
+    .catch(err => {
+      errorSection.textContent = err;
+      currentFile.textContent = "";
+      show(errorSection);
+      hide(processingSection);
+    });
 });
 
 let zipFile: Blob | null = null;

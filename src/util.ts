@@ -1,10 +1,10 @@
 export const hasOwnProperty = (
   obj: Object,
-  v: string | number | symbol
+  v: string | number | symbol,
 ): boolean => Object.prototype.hasOwnProperty.call(obj, v);
 
 export function fromEntries<K extends PropertyKey, V>(
-  iter: Iterable<[K, V]>
+  iter: Iterable<[K, V]>,
 ): { [k in K]: V } {
   const obj = {};
 
@@ -22,7 +22,7 @@ export function fromEntries<K extends PropertyKey, V>(
       configurable: true,
       enumerable: true,
       writable: true,
-      value: val
+      value: val,
     });
   }
 
