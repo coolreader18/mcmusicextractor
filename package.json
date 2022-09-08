@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "file-saver": "^2.0.2",
-    "jszip": "^3.2.1"
+    "jszip": "^3.7.0"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
